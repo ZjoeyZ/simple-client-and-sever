@@ -1,13 +1,10 @@
 import socket
 
-host = ''
-port = 2000
-
 s = socket.socket()
 
-s.bind((host, port))
-
-
+host = ''
+port = 2000
+s.bind((host, port))  #服务器绑定端口
 
 while True:
 
@@ -19,7 +16,7 @@ while True:
 
     print('ip and request, {}\n{}'.format(address, request.decode('utf-8')))
 
-    response = b'<h1>Hello World!</h1>'
+    response = b'HTTP/1.1 200 OK\r\n\r\n<h1>Hello World!</h1>'
     
     connection.sendall(response)
 

@@ -2,7 +2,6 @@
 
 import socket
 
-
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 host = 'g.cn'
@@ -19,5 +18,4 @@ print('请求', request)
 s.send(request)
 
 response = s.recv(1023)
-print('响应', response)
-print('响应的 str 格式', response.decode('utf-8'))
+print('响应的 str 格式:\r\n', response.decode('utf-8'))
