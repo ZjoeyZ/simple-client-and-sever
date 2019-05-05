@@ -1,4 +1,4 @@
-# coding: utf-8
+# 功能：访问谷歌，接收响应并打印
 
 import socket
 
