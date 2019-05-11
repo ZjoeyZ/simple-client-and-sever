@@ -1,4 +1,4 @@
-# 功能：绑定主机3000端口，接收访问请求，解析，根据请求路径不同返回不同响应
+# 功能：绑定主机3000端口，接收访问请求，解析得到path，根据path不同返回不同响应
 import socket
 
 
@@ -14,7 +14,7 @@ def route_index():
     主页的处理函数, 返回主页的响应
     """
     header = 'HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n'
-    body = '<h1>Hello World</h1><img src="doge.gif"/>'
+    body = '<h1>Hello World</h1><img src="sever2_doge.gif"/>'
     r = header + '\r\n' + body
     return r.encode(encoding='utf-8')
 
@@ -23,9 +23,9 @@ def route_image():
     """
     图片的处理函数, 浏览器img标签会发出这个请求，读取图片并生成响应返回
     """
-    with open('doge.gif', 'rb') as f:
-        header = b'HTTP/1.x 200 OK\r\nContent-Type: image/gif\r\n\r\n'
-        img = header + f.read()
+    with open('sever2_doge.gif', 'rb') as f:
+        header = b'HTTP/1.1 200 OK\r\nContent-Type: image/gif\r\n'
+        img = header + b'\r\n' + f.read()
         return img
 
 
@@ -35,10 +35,9 @@ def error(code=404):
     根据 code 返回不同的错误响应
     目前只有 404
     """
-    # 之前上课我说过不要用数字来作为字典的 key
-    # 但是在 HTTP 协议中 code 都是数字似乎更方便所以打破了这个原则
+    # HTTP 协议中 code 都是数字似乎更方便所以打破了不要用数字来作为字典的 key原则
     e = {
-        404: b'HTTP/1.x 404 NOT FOUND\r\n\r\n<h1>NOT FOUND</h1>',
+        404: b'HTTP/1.1 404 NOT FOUND\r\n\r\n<h1>NOT FOUND</h1>',
     }
     return e.get(code, b'')
 
@@ -50,7 +49,7 @@ def response_for_path(path):
     """
     r = {
         '/': route_index,
-        '/doge.gif': route_image,
+        '/sever2_doge.gif': route_image,
     }
     response = r.get(path, error)
     return response()

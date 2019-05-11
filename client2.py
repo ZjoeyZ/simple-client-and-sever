@@ -5,9 +5,9 @@ import ssl
 
 # 1，parsed url 得到 protocol, host, port, path
 # 2，根据protocol，生产socket对象
-# 3，根据host和port，利用socket连接
-# 4，生成二进制请求，利用socket发送
-# 5，利用socek接收请求，并解码
+# 3，socket连接host和port，
+# 4，生成二进制请求，socket发送
+# 5，socek接收请求，并解码
 # 6，解析请求，判断是否重定位，返回status_code, headers, body
 # 7，打印 整数status_code,字典headers, 响应body
 
