@@ -1,27 +1,14 @@
-# 功能：绑定主机3000端口，接收访问请求，解析得到request对象，根据请求路径不同返回不同响应
-import time
 import socket
 import urllib.parse
 
+from utils import log
 
-# from routes import route_static
-# from routes import route_dict
-
-
-def log(*args, **kwargs):
-    """
-    新的print函数，自动打印时间
-    """
-    format = '%Y/%m/%d %H:%M:%S'
-    value = time.localtime(int(time.time()))
-    dt = time.strftime(format, value)
-    print(dt, *args, **kwargs)
+from routes import route_static
+from routes import route_dict
 
 
+# 定义一个 class 用于保存请求的数据
 class Request(object):
-    """
-    定义一个 class 用于保存请求的数据
-    """
     def __init__(self):
         self.method = 'GET'
         self.path = ''
@@ -29,12 +16,6 @@ class Request(object):
         self.body = ''
 
     def form(self):
-        """
-        form 函数用于把 body 解析为一个字典并返回
-        body 的格式如下 a=b&c=d&e=1
-        """
-        # username=1 2&a?&password=         真实输入
-        # username=1+2%26a%3F&password=     转码过后
         args = self.body.split('&')
         f = {}
         for arg in args:
@@ -58,8 +39,12 @@ def error(request, code=404):
 
 def parsed_path(path):
     """
-    parsed_path 用于把 path 和 query 分离
-    query 转 字典
+    把 path 和 query 分离,并解析query
+    message=xx&author=xxx
+    {
+        'message': 'xx',
+        'author': 'xxx',
+    }
     """
     index = path.find('?')
     if index == -1:
@@ -79,14 +64,13 @@ def response_for_path(path):
     request.path = path
     request.query = query
     log('path and query', path, query)
-
     r = {
-        # '/static': route_static,
+        '/static': route_static,
         # '/': route_index,
         # '/login': route_login,
         # '/messages': route_message,
     }
-    # r.update(route_dict)
+    r.update(route_dict)
     response = r.get(path, error)
     return response(request)
 
@@ -110,8 +94,9 @@ def run(host='', port=3000):
                     break
             r = r.decode('utf-8')
             log('原始请求\r\n', r)
-            # chrome 会发送空请求，判断一下防止程序崩溃
+            # 空请求导致 split 得到空 list,判断一下防止程序崩溃
             if len(r.split()) < 2:
+                log("空请求", r.split())
                 continue
             path = r.split()[1]
             # 设置 request 的 method
@@ -120,12 +105,13 @@ def run(host='', port=3000):
             request.body = r.split('\r\n\r\n', 1)[1]
             # 用 response_for_path 函数来得到 path 对应的响应内容
             response = response_for_path(path)
+            # 把响应发送给客户端
             connection.sendall(response)
+            # 处理完请求, 关闭连接
             connection.close()
 
 
 request = Request()
-
 
 if __name__ == '__main__':
     # 生成配置并且运行程序
