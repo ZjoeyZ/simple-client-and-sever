@@ -1,0 +1,54 @@
+新增功能：
+        1，解析每次request里的cookie字段加入request对象
+        2，根据用户登录post的信息向客户端response的信息中加入set—cookie字段
+                接收用户登录信息，若检验成功
+                    生成session，与用户信息建立联系（加入字典）
+                    在要返回的headers字段里增加set-cookie字段，加入session
+        3，
+
+server.py
+    建立host和端口
+    监听请求
+    接受请求
+        分解请求信息
+            method
+            path
+            query
+            body
+            *headers
+            *cookies
+        保存请求
+            临时保存，用完就丢
+    处理请求
+        获取路由字典
+            path和响应函数的映射字典
+        根据请求的path和字典处理请求并获得返回页面
+            routes
+                主页
+                    得到用户信息，返回页面
+                登录
+                    处理post请求
+                        对比post数据和用户数据
+                            成功，生成session，加入set-cookie
+                            返回登录结果
+                    根据用户信息，返回页面
+                注册
+                    处理post请求
+                        对比post数据和注册规则
+                        保存合法的注册信息
+                            保存到User.txt
+                        返回注册结果
+                    返回页面
+                留言板
+                    处理post请求
+                        将post的数据加入留言列表
+                    返回页面
+                        包含留言列表
+                用户简介
+                    根据用户信息，返回页面
+                静态资源（图片）
+                    根据query的内容返回对应的资源
+        返回响应内容
+    发送响应内容
+    关闭请求连接
+

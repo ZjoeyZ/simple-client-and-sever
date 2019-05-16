@@ -106,9 +106,12 @@ def run(host='', port=3000):
             # 用 response_for_path 函数来得到 path 对应的响应内容
             response = response_for_path(path)
             # 把响应发送给客户端
+            log("going to send")
             connection.sendall(response)
+            log("send successfully")
             # 处理完请求, 关闭连接
             connection.close()
+            log("close successfully")
 
 
 request = Request()

@@ -8,7 +8,7 @@ class User(Model):
         self.password = form.get('password', '')
 
     def validate_login(self):
-        return self.username == 'gua' and self.password == '123'
+        return self.username == 'xxx' and self.password == 'xxx'
 
     def validate_register(self):
         return len(self.username) > 2 and len(self.password) > 2
